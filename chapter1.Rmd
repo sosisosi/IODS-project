@@ -1,7 +1,9 @@
 
 # About the project
 
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
+
+The course *Introduction of Open Data Science* (IODS) is about learning to handle, analyze, understand and present data with using R through R Studio. We are going to be looking into various statistical analyses, composing documents / outputs with R Markdown and sharing the work openly through GitHub. My work files will be stored in my own GitHub repository found [here](https://github.com/sosisosi/IODS-project)
+
 
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
@@ -9,5 +11,13 @@
 date()
 
 ```
-The text continues here.
 
+I'm late as always! Could not start the course work last week as I had promised to send a chapter for supervisors to read and worked on it until the last minute (of course). So tried to skim through it all on Monday eve. Ended up having some problems with installing tidyverse, apparentyly F-Secure didn't like some of the parts and without Admin rights I can't seem to get around it. Oh well, fix it later then. 
+
+Apart from the disappointment by this sudden truncation very early on the work, the course seems very promising! I had a slight "wtf" sensation when first opening the Moodle page but after getting used to the lay-out, its actually great to see Moodle used effectively and up to its potential. The amount of information on that Moodle page is not little! One thing I would have liked to see is just some small pieces of information laid *very* clear at the very start, like the division of course work into exercises and assignments and grading of these bits of work or what will the lectures entail. These things I felt I was left guessing and assuming from other stuff on the Moodle page. Also it would not hurt to have a short explanation of what R Markdown actually is / means. :) 
+
+The Book (R for Health Data Science) is so clear and amusing! Information is brought in pleasant small pieces and as a reader you really feel like the authors are holding your hand through it, not forgetting what you might not know at this point. Lovely! As said, I'm still experiencing a bit of trouble with the excercises but what I saw, they appeared nice as well. The only thing I'm frustrated with is the slowness I'm experiencing with R Studio. Let's hope there's a reason that can be fixed! 
+
+And now lets really hope I will have success in uploading this file into the course diary!!
+
+// edit: it would really be helpful to know if there is any indicator in R Studio that the commit and push worked other than waiting forever to see a change in GitHub pages!
