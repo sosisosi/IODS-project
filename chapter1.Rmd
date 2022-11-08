@@ -21,3 +21,5 @@ The Book (R for Health Data Science) is so clear and amusing! Information is bro
 And now lets really hope I will have success in uploading this file into the course diary!!
 
 // edit: it would really be helpful to know if there is any indicator in R Studio that the commit and push worked other than waiting forever to see a change in GitHub pages!
+
+// edit 2: and indeed there was, now that it succeeded :----D never a bad idea to do a good-ol' *have you tried to switch it off and on again*
