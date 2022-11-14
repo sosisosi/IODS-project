@@ -29,6 +29,7 @@ One or more extra packages (in addition to `tidyverse`) will be needed below.
 # run it (by Ctrl+Enter / Cmd+Enter):
 
 # install.packages("GGally")
+# install.packages("Rtools")
 ```
 
 
@@ -68,10 +69,10 @@ Hint:
 lrn14 <- read.table("http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt", sep="\t", header=TRUE)
 
 # Look at the dimensions of the data
-
+dim(lrn14)
 
 # Look at the structure of the data
-
+str(lrn14)
 
 ```
 
@@ -117,7 +118,9 @@ lrn14$Attitude
 lrn14$Attitude / 10
 
 # create column 'attitude' by scaling the column "Attitude"
-lrn14$attitude <- "change me!"
+lrn14$attitude <- lrn14$Attitude / 10
+#chek to see it worked:
+lrn14$attitude
 
 ```
 
@@ -179,9 +182,9 @@ surface_columns <- select(lrn14, one_of(surface_questions))
 lrn14$surf <- rowMeans(surface_columns)
 
 # select the columns related to strategic learning 
-strategic_columns <- "change me!"
+strategic_columns <- select(lrn14, one_of(strategic_questions))
 # and create column 'stra' by averaging
-
+lrn14$stra <- rowMeans(strategic_columns)
 
 ```
 
@@ -230,10 +233,10 @@ library(dplyr)
 keep_columns <- c("gender","Age","attitude", "deep", "stra", "surf", "Points")
 
 # select the 'keep_columns' to create a new dataset
-learning2014 <- "change me!"
+learning2014 <- select(lrn14, one_of(keep_columns))
 
 # see the structure of the new dataset
-
+learning2014
 
 
 ```
@@ -282,11 +285,10 @@ colnames(learning2014)
 colnames(learning2014)[2] <- "age"
 
 # change the name of "Points" to "points"
-
+colnames(learning2014)[7] <- "points"
 
 # print out the new column names of the data
-
-
+colnames(learning2014)
 
 ```
 
@@ -336,7 +338,7 @@ library(dplyr)
 male_students <- filter(learning2014, gender == "M")
 
 # select rows where points is greater than zero
-learning2014 <- 
+learning2014 <- filter(learning2014, points > 0)
 
 ```
 
@@ -393,12 +395,14 @@ p2
 
 # add a regression line
 p3 <- p2 + geom_smooth(method = "lm")
+p3
 
 # add a main title
-p4 <- "change me!"
+p4 <- p3 + 
+  labs(title = "Exam points compared to attitudes towards statistics")
 
 # draw the plot!
-
+p4
 
 ```
 
@@ -442,7 +446,9 @@ Hints:
 
 # draw a scatter plot matrix of the variables in learning2014.
 # [-1] excludes the first column (gender)
-pairs(learning2014[-1])
+group <- learning2014$gender
+pairs(learning2014[-1], 
+      col = c("red","blue")[learning2014$gender])
 
 # access the GGally and ggplot2 libraries
 library(GGally)
@@ -452,7 +458,7 @@ library(ggplot2)
 p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
 
 # draw the plot
-
+p
 
 
 ```
