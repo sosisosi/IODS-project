@@ -63,7 +63,8 @@ Have fun! This will get you ready for the rest of the IODS course!
 After an successful installation (that might take some time), continue by activating the actual functions, beginning from library(...) and then finally reading the data in:
 
 ```{r}
-library(tidyverse) # install.packages("tidyverse")
+#install.packages("tidyverse")
+library(tidyverse) 
 example_data <- read_csv("https://raw.githubusercontent.com/KimmoVehkalahti/RHDS/master/example_data.csv")
 View(example_data) # look at the data (and then close that view to return to the editor)
 ```
@@ -139,7 +140,8 @@ typesdata %>%
 Remember to install the lubridate package first...
 
 ```{r}
-library(lubridate) # install.packages("lubridate") # makes working with dates easier
+#install.packages("lubridate") # makes working with dates easier
+library(lubridate) # 
 current_datetime <- Sys.time()
 current_datetime
 
@@ -147,7 +149,7 @@ my_datetime <- "2020-12-01 12:00"
 my_datetime
 
 # error that is explained in the book... (you may put '#' in front of it)
-my_datetime - current_datetime
+#my_datetime - current_datetime
 
 current_datetime %>% class()
 my_datetime %>% class()
@@ -168,7 +170,7 @@ my_datesdiff %>% class()
 ymd_hm("2021-01-02 12:00") + my_datesdiff
 
 # another error challenge here... (again you may put '#' in front of that afterwards)
-560/my_datesdiff
+#560/my_datesdiff
 560/as.numeric(my_datesdiff)
 ```
 
