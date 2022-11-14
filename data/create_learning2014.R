@@ -3,6 +3,8 @@ date()
 "Mon Nov 14 20:13:02 2022"
 "1st data wrangling assignment"
 
+library(tidyverse)
+
 # Read the full learning2014 data
 # read the data into memory
 lrn14 <- read.table("http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt", sep="\t", header=TRUE)
@@ -40,4 +42,18 @@ colnames(learning2014)[7] <- "points"
 # select rows where points is greater than zero
 learning2014 <- filter(learning2014, points > 0)
 
+#storing the created, filtered dataset in the data folder as a .csv
+write.csv(learning2014, "data/learning2014.csv", row.names = FALSE)
+
+#reading in the created .csv to check everything went ok
+checklearning2014 <- read.csv("data/learning2014.csv")
+
+# making sure the structure is right
+str(checklearning2014)
+# the created learning2014.csv file includes 166 observations (rows) and 7 variables (columns), 
+#gender stored as character, age and points stored as integer, the rest stored as numbers
+
+# making sure the structure is right
+head(checklearning2014)
+# checking the header and first 6 rows of the data frame, all seems to be fine
 
