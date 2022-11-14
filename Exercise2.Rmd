@@ -446,16 +446,14 @@ Hints:
 
 # draw a scatter plot matrix of the variables in learning2014.
 # [-1] excludes the first column (gender)
-group <- learning2014$gender
-pairs(learning2014[-1], 
-      col = c("red","blue")[learning2014$gender])
+pairs(learning2014[-1])
 
 # access the GGally and ggplot2 libraries
 library(GGally)
 library(ggplot2)
 
 # create a more advanced plot matrix with ggpairs()
-p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
+p <- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
 
 # draw the plot
 p
