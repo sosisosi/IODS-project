@@ -1,12 +1,15 @@
-#  2: Regression and model validation
-
+# 2: Regression and model validation
 
 ```{r}
+
 date()
+
 ```
 
-First reading in the data that got wrangled before and exploring the structure and the dimensions of the data frame. 
+First reading in the data that got wrangled before and exploring the structure and the dimensions of the data frame.
+
 ```{r}
+
 library(tidyverse)
 learning2014 <- read.csv("data/learning2014.csv")
 
@@ -14,14 +17,15 @@ dim(learning2014)
 # gives the amount of observations and variables in the data frame 
 str(learning2014)
 # gives the structure of the data frames, including the variable classes of each variable
+
 ```
 
-This data set consists of 166 observations (rows) of 7 variables (columns), collected from a 2014 international survey of Approaches to Learning. The variables in the data frame are the gender and age of the student, the points the student got in the course exam, and mean values of questions related to a) students attitude towards statistics, b) to deep, c) surface and d) strategic learning, each measured on the Likert scale (1-5). 
+This data set consists of 166 observations (rows) of 7 variables (columns), collected from a 2014 international survey of Approaches to Learning. The variables in the data frame are the gender and age of the student, the points the student got in the course exam, and mean values of questions related to a) students attitude towards statistics, b) to deep, c) surface and d) strategic learning, each measured on the Likert scale (1-5).
 
-
-To view the data graphically, a scatter matrix of the variables is plotted and shown below.
+To view the data graphically, a scatter matrix of the variables is plotted and shown below (colors reflect the gender).
 
 ```{r}
+
 # access the GGally and ggplot2 libraries
 library(GGally)
 library(ggplot2)
@@ -31,6 +35,36 @@ p <- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = lis
 
 # draw the plot
 p
+
+#give a summary on the data frame
+summary(learning2014)
+
 ```
 
+The scatter matrix showcases that - there is almost double as much female entries than male - the median values between male and female participants are close to each other on all variables - most of the participants are young, below 30 years old - biggest differences between male and female students are in the attitudes towards statistics - no significant correaltion between any two variables - a low correlation between exam points and attitudes towards statistics (0.44)
 
+Studying the correlation between variables with points as a target value and the explanatory variables as the 3 highest correlation variables and comparing it to a model with only 2 explanatory variables
+
+```{r}
+
+# fit a linear multiple regression model with 3 and 2 explanatory variables
+my_model3 <- lm(points ~ attitude + stra + surf, data = learning2014)
+my_model2 <- lm(points ~ attitude + stra, data = learning2014)
+
+# print out a summary of the model
+summary(my_model3)
+summary(my_model2)
+
+# create diagnostic plots for both models to compare
+par(mfrow = c(2,2))
+plot(my_model3)
+
+par(mfrow = c(2,2))
+plot(my_model2)
+```
+
+Here we test the ability for the attitude and answers to questions about strategic and surface learning together to explain exam points that the students reached. The residuals follow a Gaussian distribution quite nicely apart from the min (-17) and max (11) values. This might point to some outliers in the data skewing the model (but not necessarily). This holds true for both models with 3 and 2 explanatory factors.
+
+The model with three factors together explaining the points did not reach a high R-squared value (0.2), i.e. the model does not seem to fit the data that well / there does not seem to be a strong link between these parameters and the exam points. The R-squared decreased ever so slightly when removing the third factor from the model, but the change is not very significant. The opposite was then true for the adjusted r-squared, but still the change is negligible.
+
+There is no patterns visible to residual vs. fitted plots (this is good). The Q-Q plot has a slight downward curve / the points curve off in the extremities. This points to the data having more extreme values for it to properly fit the regression. From the residuals vs. leverage plots it can be seen that individual observations do not a strong influence on the coefficients in the regression model. All plots for both models are very similar.

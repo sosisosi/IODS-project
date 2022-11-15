@@ -496,13 +496,13 @@ Hints:
 
 # a scatter plot of points versus attitude
 library(ggplot2)
-qplot(attitude, points, data = learning2014) + geom_smooth(method = "lm")
+qplot(attitude, points, data = learning2014, main = "linear regression between points and attitudes") + geom_smooth(method = "lm")
 
 # fit a linear model
-my_model <- lm(points ~ 1, data = learning2014)
+my_model <- lm(points ~ attitude, data = learning2014)
 
 # print out a summary of the model
-
+summary(my_model)
 
 ```
 
@@ -547,7 +547,7 @@ library(ggplot2)
 ggpairs(learning2014, lower = list(combo = wrap("facethist", bins = 20)))
 
 # create a regression model with multiple explanatory variables
-my_model2 <- lm(points ~ attitude + stra, data = learning2014)
+my_model2 <- lm(points ~ attitude + stra + surf, data = learning2014)
 
 # print out a summary of the model
 
