@@ -1,0 +1,21 @@
+# 3: Logistic regression
+
+```{r}
+
+date()
+
+```
+
+First reading in the data that got wrangled before and exploring the structure and the dimensions of the data frame.
+
+```{r}
+
+library(tidyverse)
+library(dplyr)
+
+alc <- read.csv("data/alc.csv")
+
+# print out the variable names of the data set
+colnames(alc)
+
+```
