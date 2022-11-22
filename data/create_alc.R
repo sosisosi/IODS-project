@@ -66,7 +66,7 @@ alc <- mutate(alc, alc_use = (Dalc + Walc) / 2)
 alc <- mutate(alc, high_use = alc_use > 2)
 
 # Making sure everything is in order
-glimpse(alc)
+glimpse(alc 
 
 # The alcohol use dataset has now 370 rows and 35 columns consisting of numerical and character data 
 # as well as 1 logical variable (high alcohol use  = TRUE/FALSE)

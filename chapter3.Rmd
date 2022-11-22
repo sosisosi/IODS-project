@@ -6,16 +6,143 @@ date()
 
 ```
 
-First reading in the data that got wrangled before and exploring the structure and the dimensions of the data frame.
+Reading in the data that got wrangled before and summarizing the different variables:
 
-```{r}
+```{r include=FALSE}
 
 library(tidyverse)
 library(dplyr)
+library(GGally)
+library(ggplot2)
+```
 
+```{r}
 alc <- read.csv("data/alc.csv")
+
+#Changing the name of the grade columns to be more descriptive
+colnames(alc)[31] <- "Grade_1st"
+colnames(alc)[32] <- "Grade_2nd"
+colnames(alc)[33] <- "Grade_3rd" 
 
 # print out the variable names of the data set
 colnames(alc)
 
 ```
+
+
+This data frame is combined from 2 data sets of Student performance in secondary education mathematics and portugese of two Portuguese schools.The data sets and further explanations for individual attributes can be accessed [here](https://archive.ics.uci.edu/ml/datasets/Student+Performance). The data includes personal information from 370 students and answers to different aspects of their life and school success, as seen in the variable names above. Grades are from each school period (1st to 3rd). Only answers from students attended to both mathematics and portugese are used, and presented grades and other numerical information are mean values of answers given on the math and portugese classes (from the same student). In addition to the original data attributes, weekday and weekend (Dalc and Walc) alcohol consumption are combined into a single alc_use variable and a binary variable for high alcohol use is added. Alcohol use is considered high when mean alcohol use levels are above 2/5.
+
+### The relationships between high/low alcohol consumption and some of the other variables in the data
+
+First, lets compare the data of girls vs. boys and their alcohol consumption to school success (failures, mean grade, absences).
+```{r}
+
+# produce summary statistics by sex and alcohol (high/low) use
+alc %>% group_by(sex, high_use) %>% summarise(count = n(), failures = mean(failures), mean_grade = mean(Grade_3rd), absences = mean(absences))
+
+# initialize a plot of high_use and Grade
+g1 <- ggplot(alc, aes(x = high_use, y = Grade_3rd, col = sex))
+# define the plot as a boxplot and draw it
+g1 + geom_boxplot() + ggtitle("Student grades by alcohol consumption and sex")
+
+# initialize a plot of high_use and absences
+g2 <- ggplot(alc, aes(x = high_use, y = absences, col = sex))
+# define the plot as a box plot and draw it
+g2 + geom_boxplot() + ggtitle("Student absences by alcohol consumption and sex")
+
+```
+
+The majority of students are not heavy alcohol users across both sexes (259 vs. 111). The amounts of failures are higher among the heavy users, especially with male participants, and their mean grades were also the lowest. Interestingly for female participants the high alcohol use did not affect the mean grades by much, even though the females with high alcohol use have on average the most absences. 
+
+The *numbers* would suggest that although the females who used higher amounts of alcohol were absent more, their average grades were not affected by this as much as for the male participants. However the box plot shows the amount of outliers affecting the average numbers of absences, and it seems that most of high alcohol users regardless of gender would have similar amount of absences, but higher variation than low-alcohol users
+
+
+Then, lets compare the data of girls vs. boys and their alcohol consumption to family relations and health. 
+
+```{r}
+
+
+# produce summary statistics by sex and alcohol (high/low) use
+alc %>% group_by(sex, high_use) %>% summarise(count = n(), family_relations = mean(famrel), health = mean(health), )
+
+# initialize a plot of high_use and absences
+g3 <- ggplot(alc, aes(x = high_use, y = famrel, col = sex))
+# define the plot as a box plot and draw it
+g3 + geom_boxplot() + ggtitle("Student's family relations by alcohol consumption and sex")
+
+
+# initialize a plot of high_use and absences
+g4 <- ggplot(alc, aes(x = high_use, y = health, col = sex))
+# define the plot as a box plot and draw it
+g4 + geom_boxplot() + ggtitle("Student's health by alcohol consumption and sex")
+
+```
+
+Family relations seemed to be a little bit worse with high alcohol users, but very homogeneous across sexes. Surprisingly for reported health status, male students with high alcohol use would report on average best overall health, but for some reason this in not visible in the box plot. The health status had the highest variation of all variables  
+
+
+```{r}
+
+# produce summary statistics by extra paid classes and alcohol (high/low) use
+alc %>% group_by(paid, high_use) %>% summarise(count = n(), failures = mean(failures), mean_grade = mean(Grade_3rd))
+
+# produce summary statistics by romantic relationship status and alcohol (high/low) use
+alc %>% group_by(romantic, high_use) %>% summarise(count = n(), absences = mean(absences))
+
+
+```
+
+
+Interesting side notes based on only average numbers:
+
+- Taking extra paid classes would not significantly improve the mean grade for students with high alcohol use (even by a single grade), but it would decrease the failures by more than double
+
+- More than double of high drinkers were not in a romantic relationship. 
+
+- Heavy drinkers with romantic relationships had the most absences
+
+
+### Logistic regression to statistically explore the relationship between chosen variables and the binary high/low alcohol consumption
+
+```{r}
+
+# find the model with glm()
+m <- glm(high_use ~ sex + failures + Grade_3rd + absences, data = alc, family = "binomial")
+
+# compute odds ratios (OR)
+OR <- coef(m) %>% exp
+
+# compute confidence intervals (CI)
+CI <- confint(m) %>% exp
+
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+
+
+```
+
+The logistic regression model's Odds ratios reveal that the male gender can be viewed to be associated with relative highest odds of high alcohol use, but the precision of this OR is relatively low as described by the 97,5% confidence interval. On the contrary, higher grades seems to predict the student to not have a high alcohol use, this prediction having also the highest precision within the model. These findings do not contradict earlier observations, but the differences between populations are quite small as seen in box diagrams..
+
+```{r}
+
+# predict the probability of high_use and add the predicted probabilities to 'alc'
+alc <- mutate(alc, probability = predict(m, type = "response"))
+
+# use the probabilities to make a prediction of high_use
+alc <- mutate(alc, prediction = probability > 0.5)
+
+# initialize a plot of 'high_use' versus 'probability' in 'alc'
+g <- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
+# define the geom as points and draw the plot
+g + geom_point()
+
+# tabulate the target variable versus the predictions
+table(high_use = alc$high_use, prediction = alc$prediction)
+
+# tabulate the target variable versus the predictions to show total proportions
+table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table() %>% addmargins()
+```
+
+Together the gender, failures, mean grades and absences could predict accurately the alcohol use to be low on 68% of time, and the alcohol use to be high  on 21% of the cases. The logistical regression model prediction was not accurate on 10% of the cases in total, and in 90% of cases the prediction was accurate. Pretty good! 
+
+
